@@ -1,4 +1,6 @@
-USE WideWorldImporters
+/* tsqllint-disable error select-star */
+
+USE WideWorldImporters;
 
 -- просто константы
 SELECT 1, N'какой-то текст', 10 * 123, 'abc' + 'def';
@@ -44,18 +46,18 @@ FROM Application.Cities AS c;
 -- ORDER BY
 SELECT CityID, CityName, StateProvinceID
 FROM Application.Cities
-ORDER BY CityName -- ASC
+ORDER BY CityName; -- ASC
 
 -- ORDER BY (несколько колонок), ASC / DESC
 SELECT CityID, CityName, StateProvinceID
 FROM Application.Cities c
-ORDER BY c.StateProvinceID ASC, c.CityName DESC
+ORDER BY c.StateProvinceID ASC, c.CityName DESC;
 
 -- А так что будет? ORDER BY 1, 2, 3
 -- Выполниться запрос?
 SELECT CityID, CityName, StateProvinceID
 FROM Application.Cities c
-ORDER BY 1, 2, 3
+ORDER BY 1, 2, 3;
 
 -- -------------------------------
 --  DISTINCT - удаление дублей
@@ -81,7 +83,7 @@ FROM Application.Cities;
 -- TOP - первые N записей
 -- -------------------------------
 -- по какому принципу (cортировка) сервер отобрал первые 10 записей?
-SET STATISTICS TIME ON
+SET STATISTICS TIME ON;
 
 SELECT TOP 10
 	CityID, 
@@ -101,7 +103,7 @@ SELECT TOP 10
 FROM Application.Cities
 ORDER BY City;
 
-SET STATISTICS TIME OFF
+SET STATISTICS TIME OFF;
 
 -- А какой из запросов быстрее?
 -- А насколько?
@@ -146,7 +148,7 @@ SELECT
 	CityName,
 	StateProvinceID
 FROM Application.Cities
-ORDER BY CityName
+ORDER BY CityName;
 
 SELECT 
 	CityID, 
@@ -180,10 +182,21 @@ ORDER BY City, CityID
 OFFSET (@pagenum - 1) * @pagesize ROWS FETCH NEXT @pagesize ROWS ONLY; 
 
 -- а если не будет ORDER BY, то будет ли работать OFFSET ?
+/*
 SELECT 
 	CityID, 
 	CityName,
 	StateProvinceID
 FROM Application.Cities
--- ORDER BY CityName
+OFFSET 1 ROWS FETCH FIRST 5 ROWS ONLY;
+*/
+
+
+-- OFFSET - это часть ORDER BY 
+SELECT 
+	CityID, 
+	CityName,
+	StateProvinceID
+FROM Application.Cities
+ORDER BY CityName
 OFFSET 1 ROWS FETCH FIRST 5 ROWS ONLY;

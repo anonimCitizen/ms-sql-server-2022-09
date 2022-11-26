@@ -1,4 +1,4 @@
-USE WideWorldImporters
+USE WideWorldImporters;
 
 -- Алиас в WHERE
 SELECT OrderLineID AS [Order Line ID],
@@ -6,7 +6,7 @@ SELECT OrderLineID AS [Order Line ID],
        UnitPrice,
        (Quantity * UnitPrice) AS [TotalCost]
 FROM Sales.OrderLines
-WHERE [TotalCost] > 1000
+WHERE [TotalCost] > 1000;
 
 -- Алиас в ORDER BY
 SELECT OrderLineID AS [Order Line ID],
@@ -14,4 +14,4 @@ SELECT OrderLineID AS [Order Line ID],
        UnitPrice,
        (Quantity * UnitPrice) AS [TotalCost]
 FROM Sales.OrderLines
-ORDER BY [TotalCost]
+ORDER BY [TotalCost];

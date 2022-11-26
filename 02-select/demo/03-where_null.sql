@@ -1,4 +1,7 @@
-USE WideWorldImporters
+/* tsqllint-disable error select-star */
+/* tsqllint-disable error non-sargable */
+
+USE WideWorldImporters;
 
 -- --------------------------
 -- equals
@@ -21,30 +24,30 @@ WHERE StockItemID != 225; -- StockItemID <> 225
 -- Строка начинается с Chocolate
 SELECT StockItemId, StockItemName, UnitPrice
 FROM Warehouse.StockItems
-WHERE StockItemName like 'Chocolate%';
+WHERE StockItemName LIKE 'Chocolate%';
 
 -- Строка заканчивается на 250g
 SELECT StockItemId, StockItemName, UnitPrice
 FROM Warehouse.StockItems
-WHERE StockItemName like '%250g';
+WHERE StockItemName LIKE '%250g';
 GO
 
 -- В строке есть 'flash'
 SELECT StockItemId, StockItemName, UnitPrice
 FROM Warehouse.StockItems
-WHERE StockItemName like '%flash%';
+WHERE StockItemName LIKE '%flash%';
 GO
 
 -- Начинается на Chocolate и заканчивается на 250g
 SELECT StockItemId, StockItemName, UnitPrice
 FROM Warehouse.StockItems
-WHERE StockItemName like 'Chocolate%250g';
+WHERE StockItemName LIKE 'Chocolate%250g';
 GO
 
 -- Есть 250, 251, 252, 253, 254, 255 или 256
 SELECT StockItemId, StockItemName, UnitPrice
 FROM Warehouse.StockItems
-WHERE StockItemName like '%25[0-6]%';
+WHERE StockItemName LIKE '%25[0-6]%';
 GO
 
 -- --------------------------
@@ -57,8 +60,8 @@ SELECT RecommendedRetailPrice, *
 FROM Warehouse.StockItems
 WHERE
     RecommendedRetailPrice BETWEEN 350 AND 500
-    AND StockItemName like 'USB%' 
-    OR StockItemName like 'Ride%';
+    AND StockItemName LIKE 'USB%' 
+    OR StockItemName LIKE 'Ride%';
 
 
 
@@ -68,8 +71,8 @@ SELECT RecommendedRetailPrice, *
 FROM Warehouse.StockItems
 WHERE
     (RecommendedRetailPrice BETWEEN 350 AND 500) 
-	AND (StockItemName like 'USB%' 
-	OR StockItemName like 'Ride%');
+	AND (StockItemName LIKE 'USB%' 
+	OR StockItemName LIKE 'Ride%');
 
 -- --------------------------
 -- Функции в WHERE
@@ -85,7 +88,7 @@ FROM Sales.Orders o
 WHERE OrderDate BETWEEN '2013-01-01' AND '2013-12-31';
 
 -- WHERE по выражению
-SELECT  OrderLineID as [Order Line ID],
+SELECT  OrderLineID AS [Order Line ID],
 		Quantity,
 		UnitPrice,
 		(Quantity * UnitPrice) AS [TotalCost]
@@ -101,7 +104,7 @@ WHERE (Quantity * UnitPrice) > 1000;
 SELECT *
 FROM [Sales].[Orders]
 WHERE OrderDate = '02.05.2016' 
-ORDER BY OrderDate
+ORDER BY OrderDate;
 
 
 
@@ -123,34 +126,34 @@ ORDER BY OrderDate
 
 
 
-SET DATEFORMAT mdy
+SET DATEFORMAT mdy;
 SELECT *
 FROM [Sales].[Orders]
 WHERE OrderDate = '02.05.2016' -- пятое февраля
-ORDER BY OrderDate
+ORDER BY OrderDate;
 GO
 
 
-SET DATEFORMAT dmy
+SET DATEFORMAT dmy;
 SELECT *
 FROM [Sales].[Orders]
 WHERE OrderDate = '02.05.2016' -- второе мая
-ORDER BY OrderDate
+ORDER BY OrderDate;
 GO
 
-SET DATEFORMAT mdy
+SET DATEFORMAT mdy;
 SELECT *
 FROM [Sales].[Orders]
 WHERE OrderDate = '20160502' -- второе мая
-ORDER BY OrderDate
+ORDER BY OrderDate;
 GO
 
 -- язык по умолчанию
-EXEC sp_configure 'default language'
-SELECT @@language
+EXEC sp_configure 'default language';
+SELECT @@language;
 
 -- доступные языки
-select * from sys.syslanguages
+SELECT * FROM sys.syslanguages;
 
 
 -- --------------------------
@@ -162,7 +165,7 @@ SELECT DISTINCT o.OrderDate,
        MONTH(o.OrderDate) AS OrderMonth,
        DAY(o.OrderDate) AS OrderDay,
        YEAR(o.OrderDate) AS OrderYear
-FROM Sales.Orders AS o
+FROM Sales.Orders AS o;
 
 -- DATEPART ( datepart , date )
 SELECT o.OrderID,
@@ -170,7 +173,7 @@ SELECT o.OrderID,
        DATEPART(m, o.OrderDate) AS OrderMonth,
        DATEPART(d, o.OrderDate) AS OrderDay,
        DATEPART(yy, o.OrderDate) AS OrderYear
-FROM Sales.Orders AS o
+FROM Sales.Orders AS o;
 
 -- Справка по DATEPART
 -- https://docs.microsoft.com/ru-ru/sql/t-sql/functions/datepart-transact-sql
@@ -193,29 +196,29 @@ SELECT o.OrderID,
        o.PickingCompletedWhen,
        DATEDIFF(mm, o.OrderDate, o.PickingCompletedWhen) AS MonthsDiff
 FROM Sales.Orders o
-WHERE DATEDIFF(mm, o.OrderDate, o.PickingCompletedWhen) > 0
+WHERE DATEDIFF(mm, o.OrderDate, o.PickingCompletedWhen) > 0;
 
 -- DATEADD (datepart , number , date )
 SELECT o.OrderID,
        o.OrderDate,
        DATEADD (yy, 1, o.OrderDate) AS DateAddOneYear,
        EOMONTH(o.OrderDate) AS EndOfMonth
-FROM Sales.Orders o
+FROM Sales.Orders o;
 
 -- DATETIME to string, CONVERT
 -- Показать заказы с 2013-01-05 по 2013-01-07 включительно.
 -- Есть ошибка?
 SELECT
  PickingCompletedWhen,
- cast(PickingCompletedWhen as date) CastDate,
- convert(nvarchar(16), PickingCompletedWhen, 104) as ConvertString,
- format(PickingCompletedWhen, 'dd.MM.yyyy') as format1,
- format(PickingCompletedWhen, 'dd.MM.yyyy hh:mm:ss') as format2,
- format(PickingCompletedWhen, 'd', 'ru') as format_date_ru,
- format(PickingCompletedWhen, 't', 'ru') as format_time_ru,
+ CAST(PickingCompletedWhen AS DATE) CastDate,
+ CONVERT(NVARCHAR(16), PickingCompletedWhen, 104) AS ConvertString,
+ FORMAT(PickingCompletedWhen, 'dd.MM.yyyy') AS FORMAT_1,
+ FORMAT(PickingCompletedWhen, 'dd.MM.yyyy hh:mm:ss') AS FORMAT_2,
+ FORMAT(PickingCompletedWhen, 'd', 'ru') AS FORMAT_DATE_RU,
+ FORMAT(PickingCompletedWhen, 't', 'ru') AS FORMAT_TIME_RU,
  *
 FROM Sales.Orders o
-WHERE PickingCompletedWhen BETWEEN '20130105' AND '20130107' 
+WHERE PickingCompletedWhen BETWEEN '20130105' AND '20130107';
 
 -- PickingCompletedWhen - datetime2
 
@@ -244,16 +247,16 @@ WHERE PickingCompletedWhen IS NOT NULL;
 GO
 
 -- Конкатенация с NULL
-SELECT 'abc' + null;
+SELECT 'abc' + NULL;
 
 SET CONCAT_NULL_YIELDS_NULL OFF;
-    SELECT 'abc' + null;
+    SELECT 'abc' + NULL;
 SET CONCAT_NULL_YIELDS_NULL ON;
 -- По умолчанию CONCAT_NULL_YIELDS_NULL = ON, в будущих версиях OFF будет вызывать ошибку
 
 
 -- Арифметические операции с NULL
-SELECT 3 + null;
+SELECT 3 + NULL;
 
 -- -----------------------------------
 -- ISNULL(), COALESCE()
@@ -261,7 +264,7 @@ SELECT 3 + null;
 SELECT 
     OrderId,    
     ISNULL(PickingCompletedWhen,'1900-01-01')
-FROM Sales.Orders
+FROM Sales.Orders;
 
 -- Задача - вывести значение "Unknown", там, где NULL
 -- Так будет работать?
@@ -288,12 +291,12 @@ SELECT
     OrderId,    
     PickingCompletedWhen,
     
-	ISNULL(CONVERT(nvarchar(10), PickingCompletedWhen, 104), 'Unknown') AS PickingCompletedWhenDay1,
+	ISNULL(CONVERT(NVARCHAR(10), PickingCompletedWhen, 104), 'Unknown') AS PickingCompletedWhenDay1,
 
 	CASE 
 		WHEN PickingCompletedWhen IS NULL THEN 'Unknown'
 		-- WHEN ... THEN ...
-		ELSE CONVERT(nvarchar(10), PickingCompletedWhen, 104) 
+		ELSE CONVERT(NVARCHAR(10), PickingCompletedWhen, 104) 
 	END PickingCompletedWhenDay2,
 
     CASE DATEDIFF(d, o.OrderDate, o.PickingCompletedWhen)
@@ -305,10 +308,10 @@ FROM Sales.Orders o
 ORDER BY PickingCompletedWhen;
 
 -- COALESCE()
-DECLARE @val1 int = NULL;
-DECLARE @val2 int = NULL;
-DECLARE @val3 int = 2;
-DECLARE @val4 int = 5;
+DECLARE @val1 INT = NULL;
+DECLARE @val2 INT = NULL;
+DECLARE @val3 INT = 2;
+DECLARE @val4 INT = 5;
 
 SELECT COALESCE(@val1, @val2, @val3, @val4);
 

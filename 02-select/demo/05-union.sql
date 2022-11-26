@@ -1,17 +1,17 @@
-USE WideWorldImporters
+USE WideWorldImporters;
 
 -- Задачка вывести в одном столбце
-select 'a' as Col1
-union
-select 'b' as Col2
-union
-select 'c' as Col3
-go
+SELECT 'a' AS Col1
+UNION
+SELECT 'b' AS Col2
+UNION
+SELECT 'c' AS Col3;
+GO
 
 
-select * 
-from (values('a', 2), ('b', 4), ('c', 1)) as tbl (col1, col2)
-go
+SELECT Col1, Col2
+FROM (VALUES('a', 2), ('b', 4), ('c', 1)) AS tbl (Col1, Col2);
+GO
 
 -- Будет ли разница в производительности между этими вариантами?
 
@@ -19,23 +19,23 @@ go
 
 
 -- Что быстрее UNION или UNION ALL?
-select 'a'
-union all
-select 'a'
+SELECT 'a'
+UNION ALL
+SELECT 'a';
 
-select 'a'
-union
-select 'a'
-go
+SELECT 'a'
+UNION
+SELECT 'a';
+GO
 
 -- Совместимость по типам 
 -- ошибка
-select 'a'
-union 
-select 123
-go
+SELECT 'a'
+UNION 
+SELECT 123;
+GO
 
-select 'a'
-union 
-select cast(123 as nchar(1))
-go
+SELECT 'a'
+UNION 
+SELECT CAST(123 AS NCHAR(1));
+GO

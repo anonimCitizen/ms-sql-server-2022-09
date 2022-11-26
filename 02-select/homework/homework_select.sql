@@ -12,39 +12,48 @@ https://github.com/Microsoft/sql-server-samples/releases/download/wide-world-imp
 * https://docs.microsoft.com/ru-ru/sql/samples/wide-world-importers-oltp-database-catalog
 */
 
+/*
+TODO: Требования к проверке:
+* оформление кода (ссылка на материал ...)
+* линтеры (плагины IDE ...)
+*/
+
 -- ---------------------------------------------------------------------------
 -- Задание - написать выборки для получения указанных ниже данных.
 -- ---------------------------------------------------------------------------
 
-USE WideWorldImporters
+USE WideWorldImporters;
 
 /*
 1. Все товары, в названии которых есть "urgent" или название начинается с "Animal".
+
 Вывести: ИД товара (StockItemID), наименование товара (StockItemName).
 Таблицы: Warehouse.StockItems.
 */
 
-напишите здесь свое решение
+-- напишите здесь свое решение
 
 /*
 2. Поставщиков (Suppliers), у которых не было сделано ни одного заказа (PurchaseOrders).
 Сделать через JOIN, с подзапросом задание принято не будет.
+
 Вывести: ИД поставщика (SupplierID), наименование поставщика (SupplierName).
 Таблицы: Purchasing.Suppliers, Purchasing.PurchaseOrders.
 По каким колонкам делать JOIN подумайте самостоятельно.
 */
 
-напишите здесь свое решение
+-- напишите здесь свое решение
 
 /*
-3. Заказы (Orders) с ценой товара (UnitPrice) более 100$ 
+3. Заказы (Orders) с товарами ценой (UnitPrice) более 100$
 либо количеством единиц (Quantity) товара более 20 штук
 и присутствующей датой комплектации всего заказа (PickingCompletedWhen).
+
 Вывести:
 * OrderID
-* дату заказа (OrderDate) в формате ДД.ММ.ГГГГ
-* название месяца, в котором был сделан заказ
-* номер квартала, в котором был сделан заказ
+* дату заказа (OrderDate) в формате ДД.ММ.ГГГГ (10.01.2011)
+* название месяца, в котором был сделан заказ (используйте функцию FORMAT или DATENAME)
+* номер квартала, в котором был сделан заказ (используйте функцию DATEPART)
 * треть года, к которой относится дата заказа (каждая треть по 4 месяца)
 * имя заказчика (Customer)
 Добавьте вариант этого запроса с постраничной выборкой,
@@ -55,13 +64,14 @@ USE WideWorldImporters
 Таблицы: Sales.Orders, Sales.OrderLines, Sales.Customers.
 */
 
-напишите здесь свое решение
+-- напишите здесь свое решение
 
 /*
 4. Заказы поставщикам (Purchasing.Suppliers),
 которые должны быть исполнены (ExpectedDeliveryDate) в январе 2013 года
 с доставкой "Air Freight" или "Refrigerated Air Freight" (DeliveryMethodName)
 и которые исполнены (IsOrderFinalized).
+
 Вывести:
 * способ доставки (DeliveryMethodName)
 * дата доставки (ExpectedDeliveryDate)
@@ -71,20 +81,26 @@ USE WideWorldImporters
 Таблицы: Purchasing.Suppliers, Purchasing.PurchaseOrders, Application.DeliveryMethods, Application.People.
 */
 
-напишите здесь свое решение
+-- напишите здесь свое решение
 
 /*
-5. Десять последних продаж (по дате продажи) с именем клиента и именем сотрудника,
+5. Десять последних продаж (по дате продажи - InvoiceDate) с именем клиента (клиент - CustomerID) и именем сотрудника,
 который оформил заказ (SalespersonPerson).
 Сделать без подзапросов.
+
+Вывести: ИД продажи (InvoiceID), дата продажи (InvoiceDate), имя заказчика (CustomerName), имя сотрудника (SalespersonFullName)
+Таблицы: Sales.Invoices, Sales.Customers, Application.People.
 */
 
-напишите здесь свое решение
+-- напишите здесь свое решение
 
 /*
-6. Все ид и имена клиентов и их контактные телефоны,
+6. Все ид и имена клиентов (клиент - CustomerID) и их контактные телефоны (PhoneNumber),
 которые покупали товар "Chocolate frogs 250g".
-Имя товара смотреть в таблице Warehouse.StockItems.
+Имя товара смотреть в таблице Warehouse.StockItems, имена клиентов и их контакты в таблице Sales.Customers.
+
+Вывести: todo
+Таблицы: Sales.Invoices, Sales.InvoiceLines, Sales.Customers, Warehouse.StockItems.
 */
 
-напишите здесь свое решение
+-- напишите здесь свое решение
