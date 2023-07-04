@@ -1,4 +1,4 @@
-USE WideWorldImporters
+USE WideWorldImporters;
 
 -- --------------
 -- UNION
@@ -6,69 +6,59 @@ USE WideWorldImporters
 -- Какие записи изменял последним сотрудник с ID=1
 -- (Customers для CustomerCategoryID = 7, и Suppliers)
 
-SELECT CustomerID as ID, CustomerName as [Name], 'customers', 0 as sort
+SELECT CustomerID AS ID, CustomerName AS [Name], 'customers', 0 AS Sort
 FROM Sales.Customers
 WHERE LastEditedBy = 1
 AND CustomerCategoryID = 7
 
 UNION
 
-SELECT SupplierID as ID2, SupplierName as [Name2], 'suppliers', 1
+SELECT SupplierID AS ID2, SupplierName AS [Name2], 'suppliers', 1
 FROM Purchasing.Suppliers
-WHERE LastEditedBy = 1
+WHERE LAStEditedBy = 1
 
 UNION
 
 SELECT -10, N'пример', 'other', -1
 
-ORDER BY Sort
-
+ORDER BY Sort;
 
 -- см. слайды
 
-
-
-
-
 -- Задачка - вывести в одном столбце
-select 'a' as Col1
-union
-select 'b' as Col2
-union
-select 'c' as Col3
-go
+SELECT 'a' AS Col1
+UNION
+SELECT 'b' AS Col2
+UNION
+SELECT 'c' AS Col3;
+GO
 
-
-select * 
-from (values('a', 2), ('b', 4), ('c', 1)) as tbl (col1, col2)
-go
+SELECT Col1, Col2 
+FROM (VALUES('a', 2), ('b', 4), ('c', 1)) AS tbl (Col1, Col2);
+GO
 
 -- Будет ли разница в производительности между этими вариантами?
 
-
-
-
 -- Что быстрее UNION или UNION ALL?
-select 'a'
-union all
-select 'a'
+SELECT 'a'
+UNION ALL
+SELECT 'a';
 
-select 'a'
-union
-select 'a'
-go
+SELECT 'a'
+UNION
+SELECT 'a';
 
 -- Совместимость по типам 
 -- ошибка
-select 'a'
-union 
-select 123
-go
+SELECT 'a'
+UNION 
+SELECT 123;
+GO
 
-select 'a'
-union 
-select cast(123 as nchar(3))
-go
+SELECT 'a'
+UNION 
+SELECT CAST(123 AS NCHAR(3));
+GO
 
 -- --------------
 -- INTERSECT
@@ -82,13 +72,13 @@ FROM Sales.Customers
 INTERSECT
 
 SELECT LastEditedBy
-FROM Sales.Orders
+FROM Sales.Orders;
 
 -- --------------
 -- EXCEPT
 -- --------------
 
--- Найти поставщиков (Suppliers), у которых не было сделано ни одного заказа (PurchaseOrders).
+-- Найти поставщиков (Suppliers), у которых не было сделано ни одного заказа (PurchASeOrders).
 -- (в ДЗ так делать не надо, там надо только через JOIN)
 
 -- решение: (все поставщики) минус (поставщики с заказами)
@@ -103,5 +93,5 @@ EXCEPT
 SELECT 
 	s.SupplierID, 
 	s.SupplierName
-FROM Purchasing.PurchaseOrders o
-JOIN Purchasing.Suppliers s ON o.SupplierID = s.SupplierID
+FROM Purchasing.PurchASeOrders o
+JOIN Purchasing.Suppliers s ON o.SupplierID = s.SupplierID;

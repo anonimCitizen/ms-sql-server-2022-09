@@ -1,54 +1,56 @@
-DROP TABLE IF EXISTS #table1 
-CREATE TABLE #table1 (xmlcol XML)
+/* tsqllint-disable error select-star */
+
+DROP TABLE IF EXISTS #table1;
+CREATE TABLE #table1 (xmlcol XML);
 GO
 
-INSERT #table1 VALUES('<person/>')
-INSERT #table1 VALUES('<person></person>')
+INSERT #table1 VALUES('<person/>');
+INSERT #table1 VALUES('<person></person>');
 INSERT #table1 VALUES('<person>
 
-</person>')
+</person>');
 GO
 
 -- Представление будет одинаковое
-SELECT * FROM #table1 
+SELECT xmlcol FROM #table1;
 GO
 
 -- Так будет ошибка. Почему?
-INSERT #table1 VALUES('<b><i>abc</b></i>')
-INSERT #table1 VALUES('<person>abc</Person>')
+INSERT #table1 VALUES('<b><i>abc</b></i>');
+INSERT #table1 VALUES('<person>abc</Person>');
 GO
 
-SELECT * FROM #table1
+SELECT xmlcol FROM #table1;
 GO
 
 -- XML-документ
-INSERT #table1 VALUES('<doc/>')
+INSERT #table1 VALUES('<doc/>');
 -- Фрагмент документа
-INSERT #table1 VALUES('<doc/><doc/>')
+INSERT #table1 VALUES('<doc/><doc/>');
 -- Только текст 
-INSERT #table1 VALUES('Text only')
+INSERT #table1 VALUES('Text only');
 -- Пустая строка
-INSERT #table1 VALUES('') 
+INSERT #table1 VALUES('');
 -- NULL
-INSERT #table1 VALUES(NULL) 
+INSERT #table1 VALUES(NULL);
 
-SELECT * FROM #table1
+SELECT xmlcol FROM #table1;
 
 -- XML SCHEMA
-USE WideWorldImporters
+USE WideWorldImporters;
 
 -- Можно получить в FOR XML, указав XMLSCHEMA
 SELECT CityID,  CityName
 FROM Application.Cities
-FOR XML RAW('City'), ROOT('Cities'), XMLSCHEMA
+FOR XML RAW('City'), ROOT('Cities'), XMLSCHEMA;
 
 -- Создание схемы
 -- DROP XML SCHEMA COLLECTION TestXmlSchema
 CREATE XML SCHEMA COLLECTION TestXmlSchema AS   
 N'
  <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
-			 xmlns:sqltypes="http://schemas.microsoft.com/sqlserver/2004/sqltypes" 
-			 elementFormDefault="qualified">
+       xmlns:sqltypes="http://schemas.microsoft.com/sqlserver/2004/sqltypes" 
+       elementFormDefault="qualified">
     <xsd:import namespace="http://schemas.microsoft.com/sqlserver/2004/sqltypes" schemaLocation="http://schemas.microsoft.com/sqlserver/2004/sqltypes/sqltypes.xsd" />
     <xsd:element name="City">
       <xsd:complexType>
@@ -62,37 +64,37 @@ N'
         </xsd:attribute>
       </xsd:complexType>
     </xsd:element>
-  </xsd:schema>'
+  </xsd:schema>';
 
 -- ---------------------------
 -- Использование XML Schema
 -- ---------------------------
 
 -- Будет ли так работать?
-DECLARE @XmlWithSchema1 XML(TestXmlSchema)
-SET @XmlWithSchema1 = '<City CityID="1" CityName="Aaronsburg" />'
+DECLARE @XmlWithSchema1 XML(TestXmlSchema);
+SET @XmlWithSchema1 = '<City CityID="1" CityName="Aaronsburg" />';
 GO
 
 -- А так?
-DECLARE @XmlWithSchema2 XML(TestXmlSchema)
-SET @XmlWithSchema2 = '<City CityID="abc" CityName="Aaronsburg" />'
+DECLARE @XmlWithSchema2 XML(TestXmlSchema);
+SET @XmlWithSchema2 = '<City CityID="abc" CityName="Aaronsburg" />';
 GO
 
 -- И так?
-DECLARE @XmlWithSchema2 XML(TestXmlSchema)
-SET @XmlWithSchema2 = '<City CityID="2" CityNameASD="Aaronsburg" />'
+DECLARE @XmlWithSchema2 XML(TestXmlSchema);
+SET @XmlWithSchema2 = '<City CityID="2" CityNameASD="Aaronsburg" />';
 GO
 
 -- А здесь?
-DECLARE @XmlWithoutSchema1 XML
-SET @XmlWithoutSchema1 = '<CityAAA CityID="abc" Name="Aaronsburg" />'
+DECLARE @XmlWithoutSchema1 XML;
+SET @XmlWithoutSchema1 = '<CityAAA CityID="abc" Name="Aaronsburg" />';
 GO
 
 -- ----------------------
 -- XQuery
 -- ----------------------
 
-use WideWorldImporters
+USE WideWorldImporters;
 
 -- DECLARE @x XML
 -- SELECT @x = (
@@ -104,7 +106,7 @@ use WideWorldImporters
 --       AlternateContact AS [Contact/Alternate],
 --       WebsiteURL [WebsiteURL],
 --       CityName AS [CityName],
---     'SupplierReference: ' + SupplierReference as "comment()"
+--     'SupplierReference: ' + SupplierReference AS "comment()"
 --   FROM Website.Suppliers
 --   FOR XML PATH('Supplier'), ROOT('Suppliers'), TYPE)
 
@@ -112,45 +114,45 @@ use WideWorldImporters
 -- !!! Для запуска примера изменить путь к файлу 04-xml_data_type.xml,
 -- чтобы соответствовал вашему расположению
 
-DECLARE @x XML
+DECLARE @x XML;
 SET @x = ( 
   SELECT * FROM OPENROWSET
   (BULK 'Z:\2021-03\08-xml_json_hw\examples\04-xml_data_type.xml',
-   SINGLE_CLOB) as d)
+   SINGLE_CLOB) AS d);
 
 -- value(XQuery/XPath, Type) - возвращает скалярное (единичное) значение
 -- query(XQuery/XPath) - возвращает XML
 -- exists(XQuery/XPath) - проверяет есть ли данные; 0 - not exists, 1 - exists
 
 SELECT 
-   @x.value('(/Suppliers/Supplier/@Id)[1]', 'int') as [Id],
-   ltrim(@x.value('(/Suppliers/Supplier/Name)[1]', 'varchar(100)')) as [SupplierName],
-   ltrim(@x.value('(/Suppliers/Supplier/SupplierInfo/Category)[1]', 'varchar(100)')) as [Category],
+   @x.value('(/Suppliers/Supplier/@Id)[1]', 'int') AS [Id],
+   ltrim(@x.value('(/Suppliers/Supplier/Name)[1]', 'varchar(100)')) AS [SupplierName],
+   ltrim(@x.value('(/Suppliers/Supplier/SupplierInfo/Category)[1]', 'varchar(100)')) AS [Category],
 
-   @x.query('(/Suppliers/Supplier/Contact)[1]') as [Query_Contact],
+   @x.query('(/Suppliers/Supplier/Contact)[1]') AS [Query_Contact],
    
-   @x.query('/Suppliers/Supplier/Name[text() = "Contoso,Ltd."]') as [Query_Contoso],
-   @x.exist('/Suppliers/Supplier/Name[text() = "Contoso,Ltd."]') as [Exist_Contoso],
+   @x.query('/Suppliers/Supplier/Name[text() = "Contoso,Ltd."]') AS [Query_Contoso],
+   @x.exist('/Suppliers/Supplier/Name[text() = "Contoso,Ltd."]') AS [Exist_Contoso],
   
-   @x.query('/Suppliers/Supplier/Name[text() = "Microsoft"]') as [Query_Microsoft],
-   @x.exist('/Suppliers/Supplier/Name[text() = "Microsoft"]') as [Exist_Microsoft],
+   @x.query('/Suppliers/Supplier/Name[text() = "Microsoft"]') AS [Query_Microsoft],
+   @x.exist('/Suppliers/Supplier/Name[text() = "Microsoft"]') AS [Exist_Microsoft],
 
-   @x.query('count(//Supplier)') as [SupplierCount]
+   @x.query('count(//Supplier)') AS [SupplierCount];
 GO 
 
 -- nodes(XQuery/XPath) - возвращает представление строк для XML
 -- Можно использовать вместо OPENXML
 
-DECLARE @x XML
-SET @x = (SELECT * FROM OPENROWSET  (BULK 'Z:\2021-03\08-xml_json_hw\examples\04-xml_data_type.xml', SINGLE_BLOB)  as d)
+DECLARE @x XML;
+SET @x = (SELECT * FROM OPENROWSET (BULK 'Z:\2021-03\08-xml_json_hw\examples\04-xml_data_type.xml', SINGLE_BLOB)  AS d);
 
 SELECT  
-  t.Supplier.value('(@Id)[1]', 'int') as [Id],
-  t.Supplier.value('(Name)[1]', 'varchar(100)') as [SupplierName],
-  t.Supplier.value('(SupplierInfo/Category)[1]', 'varchar(100)') as [Category],
+  t.Supplier.value('(@Id)[1]', 'int') AS [Id],
+  t.Supplier.value('(Name)[1]', 'varchar(100)') AS [SupplierName],
+  t.Supplier.value('(SupplierInfo/Category)[1]', 'varchar(100)') AS [Category],
 
   t.Supplier.query('.')
-FROM @x.nodes('/Suppliers/Supplier') as t(Supplier)
+FROM @x.nodes('/Suppliers/Supplier') AS t(Supplier);
 
 GO
 

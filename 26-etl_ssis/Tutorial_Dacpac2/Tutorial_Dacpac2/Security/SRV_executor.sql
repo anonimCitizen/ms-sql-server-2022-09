@@ -1,0 +1,3 @@
+﻿CREATE LOGIN [SRV\executor]
+    FROM WINDOWS WITH DEFAULT_LANGUAGE = [русский];
+

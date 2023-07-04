@@ -18,7 +18,7 @@ https://github.com/Microsoft/sql-server-samples/releases/tag/wide-world-importer
 -- Задание - написать выборки для получения указанных ниже данных.
 -- ---------------------------------------------------------------------------
 
-USE WideWorldImporters
+USE WideWorldImporters;
 
 /*
 Примечания к заданиям 1, 2:
@@ -41,14 +41,13 @@ USE WideWorldImporters
 Сделать два варианта: с помощью OPENXML и через XQuery.
 */
 
-напишите здесь свое решение
+-- напишите здесь свое решение
 
 /*
 2. Выгрузить данные из таблицы StockItems в такой же xml-файл, как StockItems.xml
 */
 
-напишите здесь свое решение
-
+-- напишите здесь свое решение
 
 /*
 3. В таблице Warehouse.StockItems в колонке CustomFields есть данные в JSON.
@@ -59,7 +58,7 @@ USE WideWorldImporters
 - FirstTag (из поля CustomFields, первое значение из массива Tags)
 */
 
-напишите здесь свое решение
+-- напишите здесь свое решение
 
 /*
 4. Найти в StockItems строки, где есть тэг "Vintage".
@@ -80,5 +79,4 @@ USE WideWorldImporters
 ... where ... CustomFields like '%Vintage%' 
 */
 
-
-напишите здесь свое решение
+-- напишите здесь свое решение

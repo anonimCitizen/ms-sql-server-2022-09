@@ -1,4 +1,7 @@
-use WideWorldImporters
+/* tsqllint-disable error non-sargable */
+/* tsqllint-disable error select-star */
+
+USE WideWorldImporters;
 
 -- -----------------------------------------
 -- 2) TABLE SCAN, INDEX SEEK, ...
@@ -7,7 +10,7 @@ use WideWorldImporters
 -- Вернем БД в первоначальное состояние 
 DROP TABLE IF EXISTS Application.CountriesCount;
 DROP INDEX IX_Application_Countries_CountryName_INCLUDE_Continent
-ON Application.Countries
+ON Application.Countries;
 
 
 -- Создаем тестовую таблицу с помощью SELECT INTO
@@ -18,7 +21,7 @@ GROUP BY Continent;
 
 -- Посмотрим, что получилось
 SELECT * 
-FROM Application.CountriesCount
+FROM Application.CountriesCount;
 -- Созданная таблица будет "кучей" (heap)
 
 -- Table Scan 
@@ -29,7 +32,7 @@ WHERE Continent = 'Asia';
 
 -- Clustered Index Scan
 SELECT * 
-FROM Application.Countries
+FROM Application.Countries;
 
 -- Добавим условие WHERE
 SELECT CountryName
@@ -39,7 +42,7 @@ WHERE Continent = 'Asia';
 -- С помощью sp_helpindex можно посмотреть индексы в таблице
 -- а также в SSMS: <table> \ Indexes
 
-exec sp_helpindex 'Application.Countries';
+EXEC sp_helpindex 'Application.Countries';
 -- есть индекс по CountryName
 -- попробуем WHERE CountryName
 
@@ -75,7 +78,7 @@ WHERE CountryName = 'Korea';
 -- Как убрать Key Lookup?
 CREATE NONCLUSTERED INDEX IX_Application_Countries_CountryName_INCLUDE_Continent
 ON Application.Countries(CountryName)
-INCLUDE(Continent)
+INCLUDE(Continent);
 GO
 
 -- Это будет "покрывающий" индекс
@@ -90,7 +93,7 @@ GO
 
 -- Удалим индекс, он нам больше не понадобиться
 DROP INDEX IX_Application_Countries_CountryName_INCLUDE_Continent
-ON Application.Countries
+ON Application.Countries;
 GO
 
 -- Создаем еще одну кучу (heap) и потом создадим индекс для нее 
@@ -99,7 +102,7 @@ DROP TABLE IF EXISTS Application.CountriesCount_Index;
 -- тестовая heap-табличка с индексом
 SELECT * 
 INTO Application.CountriesCount_Index
-FROM Application.CountriesCount
+FROM Application.CountriesCount;
 GO
 
 CREATE INDEX IX_CountryCount_ContinentIndex 
@@ -107,8 +110,8 @@ ON Application.CountriesCount_Index (Continent);
 GO
 
 -- Что в табличке и какие индексы
-SELECT * FROM Application.CountriesCount_Index
-exec sp_helpindex 'Application.CountriesCount_Index';
+SELECT * FROM Application.CountriesCount_Index;
+EXEC sp_helpindex 'Application.CountriesCount_Index';
 GO
 
 -- RID Lookup
@@ -124,19 +127,19 @@ WHERE Continent = 'Asia';
 
 -- Вспомним, что в таблице CountriesCount_Index
 SELECT *
-FROM Application.CountriesCount_Index
+FROM Application.CountriesCount_Index;
 
 -- Несколько индексов в одном запросе
-exec sp_helpindex 'Sales.Invoices';
+EXEC sp_helpindex 'Sales.Invoices';
 
 SELECT InvoiceID
 FROM Sales.Invoices 
-WHERE SalespersonPersonID = 16 and CustomerID = 57;
+WHERE SalespersonPersonID = 16 AND CustomerID = 57;
 
 -- Несколько индексов в одном запросе + Key Lookup
 SELECT InvoiceID, InvoiceDate
 FROM Sales.Invoices
-WHERE SalespersonPersonID = 16 or CustomerID = 57;
+WHERE SalespersonPersonID = 16 OR CustomerID = 57;
 
 -- Опять JOIN, аж две штуки. Откуда? В исходном запросе нет ни одного?
 
@@ -147,19 +150,19 @@ WHERE SalespersonPersonID = 16 or CustomerID = 57;
 -- Надо стремиться создавать запросы, которые SARGable
 
 -- Где будет использоваться индекс?
-exec sp_helpindex 'Sales.Invoices';
+EXEC sp_helpindex 'Sales.Invoices';
 
 -- Есть индекс по ConfirmedDeliveryTime
 
 -- Здесь 
 SELECT InvoiceID
 FROM Sales.Invoices
-WHERE year(ConfirmedDeliveryTime) = 2014
+WHERE YEAR(ConfirmedDeliveryTime) = 2014;
 
 -- Или здесь
 SELECT InvoiceID
 FROM Sales.Invoices
-WHERE ConfirmedDeliveryTime BETWEEN '2014-01-01' AND '2015-01-01'
+WHERE ConfirmedDeliveryTime BETWEEN '2014-01-01' AND '2015-01-01';
 GO
 
 -- ConfirmedDeliveryTime - тип datetime2
@@ -170,7 +173,7 @@ GO
 -- А здесь?
 SELECT FullName, LEFT(FullName, 1)
 FROM Application.People
-WHERE LEFT(FullName, 1) = 'K'
+WHERE LEFT(FullName, 1) = 'K';
 -- Если нет, то как исправить?
 
 
@@ -182,15 +185,15 @@ WHERE LEFT(FullName, 1) = 'K'
 -- Index Seek
 SELECT FullName  
 FROM Application.People
-WHERE FullName like 'K%'
+WHERE FullName LIKE 'K%';
 
 -- А здесь?
 SELECT FullName  
 FROM Application.People
-WHERE FullName like '%K'
+WHERE FullName LIKE '%K';
 
 -- А здесь?
 SELECT FullName  
 FROM Application.People
-WHERE FullName like '%K%'
+WHERE FullName LIKE '%K%';
 GO

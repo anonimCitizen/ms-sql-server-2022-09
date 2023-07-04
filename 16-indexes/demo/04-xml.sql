@@ -3,25 +3,25 @@
 -- XML indexes
 -- =========================================
 
-USE WideWorldImporters
+USE WideWorldImporters;
 GO
 
-SET STATISTICS TIME ON
-SET STATISTICS IO ON
+SET STATISTICS TIME ON;
+SET STATISTICS IO ON;
 GO
 
 -- ----------------------------------------
 -- Создаем таблицу с XML
 -- Сводка по всем заказам по заказчикам
 -- ----------------------------------------
-DROP TABLE IF EXISTS Sales.OrderSummary
+DROP TABLE IF EXISTS Sales.OrderSummary;
 GO
 
 CREATE TABLE Sales.OrderSummary
 (
   ID INT NOT NULL IDENTITY,
   OrderSummary XML
-)
+);
 GO
 
 INSERT INTO Sales.OrderSummary ( OrderSummary)
@@ -51,23 +51,27 @@ SELECT
       WHERE customers.CustomerID = OuterCust.CustomerID
     ) Base 
     FOR XML PATH('Order'), ROOT ('SalesOrders'), TYPE) AS OrderSummary
-FROM Sales.Customers OuterCust
+FROM Sales.Customers OuterCust;
 GO
 
 -- Посмотрим, что получилось 
-SELECT TOP 3 * FROM Sales.OrderSummary
+SELECT TOP 3 
+    ID, 
+    OrderSummary 
+FROM Sales.OrderSummary;
+GO
 
 -- Нужен первичный ключ с кластерным индексом
 ALTER TABLE Sales.OrderSummary 
 ADD CONSTRAINT PK_OrderSummary 
-PRIMARY KEY CLUSTERED(ID)
+PRIMARY KEY CLUSTERED(ID);
 GO
 
 
 -- Посмотрим на запросы без индекса
 SELECT ID
 FROM Sales.OrderSummary
-WHERE OrderSummary.exist('/SalesOrders/Order/OrderDetails/Product/@ProductID[.="22"]') = 1
+WHERE OrderSummary.exist('/SalesOrders/Order/OrderDetails/Product/@ProductID[.="22"]') = 1;
 GO
 --SQL Server parse and compile time: 
 --   CPU time = 0 ms, elapsed time = 0 ms.
@@ -84,13 +88,13 @@ GO
 
 -- !!! может выполняться долго
 CREATE PRIMARY XML INDEX [XML_Primary_OrderSummary]
-ON Sales.OrderSummary ([OrderSummary])
+ON Sales.OrderSummary ([OrderSummary]);
 GO
 
 -- С первичным индексом
 SELECT ID
 FROM Sales.OrderSummary
-WHERE OrderSummary.exist('/SalesOrders/Order/OrderDetails/Product/@ProductID[.="22"]') = 1
+WHERE OrderSummary.exist('/SalesOrders/Order/OrderDetails/Product/@ProductID[.="22"]') = 1;
 GO
 --SQL Server parse and compile time: 
 --   CPU time = 0 ms, elapsed time = 0 ms.
@@ -109,13 +113,13 @@ GO
 CREATE XML INDEX [XML_SecondaryPATH_OrderSummary]
 ON Sales.OrderSummary (OrderSummary)
 USING XML INDEX [XML_Primary_OrderSummary] 
-FOR PATH
+FOR PATH;
 GO
 
 -- С вторичным PATH-индексом
 SELECT ID
 FROM Sales.OrderSummary
-WHERE OrderSummary.exist('/SalesOrders/Order/OrderDetails/Product/@ProductID[.="22"]') = 1
+WHERE OrderSummary.exist('/SalesOrders/Order/OrderDetails/Product/@ProductID[.="22"]') = 1;
 GO
 --SQL Server parse and compile time: 
 --   CPU time = 0 ms, elapsed time = 0 ms.
@@ -134,7 +138,7 @@ GO
 
 SELECT ID
 FROM Sales.OrderSummary
-WHERE OrderSummary.exist('//Product/@ProductID[.="194"]') = 1
+WHERE OrderSummary.exist('//Product/@ProductID[.="194"]') = 1;
 --SQL Server parse and compile time: 
 --   CPU time = 17 ms, elapsed time = 17 ms.
 
@@ -151,13 +155,13 @@ WHERE OrderSummary.exist('//Product/@ProductID[.="194"]') = 1
 CREATE XML INDEX [XML_SecondaryVALUE_OrderSummary]
 ON Sales.OrderSummary (OrderSummary)
 USING XML INDEX [XML_Primary_OrderSummary] 
-FOR VALUE
+FOR VALUE;
 GO
 
 -- С вторичным VALUE-индексом
 SELECT ID
 FROM Sales.OrderSummary
-WHERE OrderSummary.exist('//Product/@ProductID[.="194"]') = 1
+WHERE OrderSummary.exist('//Product/@ProductID[.="194"]') = 1;
 --SQL Server parse and compile time: 
 --   CPU time = 0 ms, elapsed time = 0 ms.
 --SQL Server parse and compile time: 

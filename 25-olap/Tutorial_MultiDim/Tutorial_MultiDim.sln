@@ -1,0 +1,23 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.1831
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{D2ABAB84-BF74-430A-B69E-9DC6D40DDA17}") = "Tutorial_MultiDim", "Tutorial_MultiDim\Tutorial_MultiDim.dwproj", "{9D7D697B-9259-4DF6-998F-2B02C3F83E01}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Development|Default = Development|Default
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D7D697B-9259-4DF6-998F-2B02C3F83E01}.Development|Default.ActiveCfg = Development
+		{9D7D697B-9259-4DF6-998F-2B02C3F83E01}.Development|Default.Build.0 = Development
+		{9D7D697B-9259-4DF6-998F-2B02C3F83E01}.Development|Default.Deploy.0 = Development
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1E66C4EC-B190-4010-BFFE-6EB1BAAA6BEC}
+	EndGlobalSection
+EndGlobal

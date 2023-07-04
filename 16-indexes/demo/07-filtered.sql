@@ -3,7 +3,7 @@
 -- Filtered index
 -- =========================================
 
-use WideWorldImporters
+USE WideWorldImporters;
 
 -----------------------------------
 -- Фильтрованные  (WHERE)
@@ -12,16 +12,15 @@ use WideWorldImporters
 -- UNIQUE
 
 CREATE TABLE #demo(
-	Col int null,
-	CONSTRAINT UQ_Col UNIQUE(Col)   
-)
+	Col INT NULL UNIQUE(Col)   
+);
 
-INSERT INTO #demo VALUES(1)
-INSERT INTO #demo VALUES(1)
-INSERT INTO #demo VALUES(null)
-INSERT INTO #demo VALUES(null)
+INSERT INTO #demo VALUES(1);
+INSERT INTO #demo VALUES(1);
+INSERT INTO #demo VALUES(NULL);
+INSERT INTO #demo VALUES(NULL);
 
-SELECT * FROM #demo
+SELECT Col FROM #demo;
 
 -- А если хотим, чтобы было несколько NULL, 
 -- но остальные значения уникальные?
@@ -29,16 +28,16 @@ SELECT * FROM #demo
 -- FILTERED INDEX
 
 CREATE TABLE #demo2(
-	Col int null
-)
+	Col INT NULL
+);
 
 CREATE UNIQUE NONCLUSTERED INDEX IX_Col
 ON #demo2(Col)
-WHERE(Col IS NOT NULL)
+WHERE(Col IS NOT NULL);
 
-INSERT INTO #demo2 VALUES(1)
-INSERT INTO #demo2 VALUES(1)
-INSERT INTO #demo2 VALUES(null)
-INSERT INTO #demo2 VALUES(null)
+INSERT INTO #demo2 VALUES(1);
+INSERT INTO #demo2 VALUES(1);
+INSERT INTO #demo2 VALUES(NULL);
+INSERT INTO #demo2 VALUES(NULL);
 
-SELECT * FROM #demo2
+SELECT Col FROM #demo2;

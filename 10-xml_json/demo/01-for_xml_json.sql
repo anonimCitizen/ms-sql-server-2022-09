@@ -1,4 +1,4 @@
-USE WideWorldImporters
+USE WideWorldImporters;
 
 -- Исходные данные
 SELECT TOP 3
@@ -9,7 +9,7 @@ SELECT TOP 3
     AlternateContact,
     WebsiteURL,
     CityName
-FROM Website.Suppliers
+FROM Website.Suppliers;
 
 --------------------------
 -- FOR XML RAW
@@ -18,12 +18,12 @@ FROM Website.Suppliers
 -- Простой FOR XML RAW 
 SELECT TOP 10 CityID,  CityName
 FROM Application.Cities
-FOR XML RAW
+FOR XML RAW;
 
 -- Переименование <row> и корневого элемента
 SELECT TOP 10 CityID,  CityName
 FROM Application.Cities
-FOR XML RAW('City'), ROOT('Cities')
+FOR XML RAW('City'), ROOT('Cities');
 
 -- ELEMENTS
 SELECT TOP 10 CityID,  CityName
@@ -46,7 +46,7 @@ SELECT TOP 3
     WebsiteURL [WebsiteURL],
     CityName AS [CityName]
 FROM Website.Suppliers
-FOR JSON PATH, INCLUDE_NULL_VALUES
+FOR JSON PATH, INCLUDE_NULL_VALUES;
 
  -- FOR XML PATH
 SELECT TOP 3
@@ -58,9 +58,9 @@ SELECT TOP 3
     AlternateContact AS [Contact/Alternate],
     WebsiteURL [WebsiteURL],
     CityName AS [CityName],
-	'SupplierReference: ' + SupplierReference as "comment()"
+    'SupplierReference: ' + SupplierReference AS "comment()"
 FROM Website.Suppliers
-FOR XML PATH('Supplier'), ROOT('Suppliers')
+FOR XML PATH('Supplier'), ROOT('Suppliers');
 GO
 
 -- string aggregation - STRING_AGG с 2017
@@ -77,30 +77,30 @@ GO
 
 -- исходная таблица
 SELECT TOP 10 
-	s.StateProvinceName as [StateName],	
-	c.CityName 
+    s.StateProvinceName AS [StateName],    
+    c.CityName 
 FROM Application.Cities c 
-JOIN Application.StateProvinces s ON s.StateProvinceID = c.StateProvinceID
+JOIN Application.StateProvinces s ON s.StateProvinceID = c.StateProvinceID;
 
 -- вывести имя штата и список городов в этом штате (в одной строке)
 SELECT TOP 10 
-	s.StateProvinceName as [StateName],
-	
-	(select c.CityName + ',' as 'data()'  
-	 from Application.Cities c 
-	 where s.StateProvinceID = c.StateProvinceID
-	 for xml path('')) as Cities
-FROM Application.StateProvinces s 
+    s.StateProvinceName AS [StateName],
+    
+    (SELECT c.CityName + ',' AS 'data()'  
+     FROM Application.Cities c 
+     WHERE s.StateProvinceID = c.StateProvinceID
+     FOR XML PATH('')) AS Cities
+FROM Application.StateProvinces s;
 
 -- data() - https://docs.microsoft.com/ru-ru/sql/relational-databases/xml/column-names-with-the-path-specified-as-data
 
 -- С SQL Server 2017 есть функция STRING_AGG()
 SELECT TOP 10 
-	s.StateProvinceName as [StateName],	
-	STRING_AGG(cast(c.CityName as nvarchar(max)), ', ') as Cities
+    s.StateProvinceName AS [StateName],    
+    STRING_AGG(cast(c.CityName AS NVARCHAR(max)), ', ') AS Cities
 FROM Application.Cities c 
 JOIN Application.StateProvinces s ON s.StateProvinceID = c.StateProvinceID
-GROUP BY s.StateProvinceName
+GROUP BY s.StateProvinceName;
 
 
 -- Про другие варианты (FOR XML/JSON AUTO, FOR XML EXPLICIT)

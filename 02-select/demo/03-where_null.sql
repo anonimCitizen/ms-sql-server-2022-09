@@ -71,8 +71,8 @@ SELECT RecommendedRetailPrice, *
 FROM Warehouse.StockItems
 WHERE
     (RecommendedRetailPrice BETWEEN 350 AND 500) 
-	AND (StockItemName LIKE 'USB%' 
-	OR StockItemName LIKE 'Ride%');
+    AND (StockItemName LIKE 'USB%' 
+    OR StockItemName LIKE 'Ride%');
 
 -- --------------------------
 -- Функции в WHERE
@@ -89,9 +89,9 @@ WHERE OrderDate BETWEEN '2013-01-01' AND '2013-12-31';
 
 -- WHERE по выражению
 SELECT  OrderLineID AS [Order Line ID],
-		Quantity,
-		UnitPrice,
-		(Quantity * UnitPrice) AS [TotalCost]
+        Quantity,
+        UnitPrice,
+        (Quantity * UnitPrice) AS [TotalCost]
 FROM Sales.OrderLines
 WHERE (Quantity * UnitPrice) > 1000;
 
@@ -269,8 +269,8 @@ FROM Sales.Orders;
 -- Задача - вывести значение "Unknown", там, где NULL
 -- Так будет работать?
 SELECT 
-	OrderId,    
-	ISNULL(PickingCompletedWhen, 'Unknown') AS PickingCompletedWhen
+    OrderId,    
+    ISNULL(PickingCompletedWhen, 'Unknown') AS PickingCompletedWhen
 FROM Sales.Orders;
 
 
@@ -291,13 +291,13 @@ SELECT
     OrderId,    
     PickingCompletedWhen,
     
-	ISNULL(CONVERT(NVARCHAR(10), PickingCompletedWhen, 104), 'Unknown') AS PickingCompletedWhenDay1,
+    ISNULL(CONVERT(NVARCHAR(10), PickingCompletedWhen, 104), 'Unknown') AS PickingCompletedWhenDay1,
 
-	CASE 
-		WHEN PickingCompletedWhen IS NULL THEN 'Unknown'
-		-- WHEN ... THEN ...
-		ELSE CONVERT(NVARCHAR(10), PickingCompletedWhen, 104) 
-	END PickingCompletedWhenDay2,
+    CASE 
+        WHEN PickingCompletedWhen IS NULL THEN 'Unknown'
+        -- WHEN ... THEN ...
+        ELSE CONVERT(NVARCHAR(10), PickingCompletedWhen, 104) 
+    END PickingCompletedWhenDay2,
 
     CASE DATEDIFF(d, o.OrderDate, o.PickingCompletedWhen)
         WHEN 0 THEN 'today'

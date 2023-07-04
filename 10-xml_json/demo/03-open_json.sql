@@ -1,35 +1,37 @@
+/* tsqllint-disable error select-star */
+
 -- ----------------------
 -- OPENJSON
 -- ----------------------
 -- Этот пример запустить сразу весь по [F5]
 -- (предварительно проверив ниже путь к файлу 03-open_json.json)
 
-DECLARE @json nvarchar(max)
+DECLARE @json NVARCHAR(max);
 
 SELECT @json = BulkColumn
 FROM OPENROWSET
 (BULK 'Z:\2022-02\11-xml_json_hw\examples\03-open_json.json', 
  SINGLE_CLOB)
-as data 
+AS data;
 
 -- Проверяем, что в @json
-SELECT @json as [@json]
+SELECT @json AS [@json];
 
 -- OPENJSON Явное описание структуры
 SELECT *
 FROM OPENJSON (@json, '$.Suppliers')
 WITH (
-    Id	        int,
-    Supplier    nvarchar(100)   '$.SupplierInfo.Name',    
-    Contact     nvarchar(max)   '$.Contact' AS JSON,
-    City        nvarchar(100)   '$.CityName'
-)
+    Id          INT,
+    Supplier    NVARCHAR(100)   '$.SupplierInfo.Name',    
+    Contact     NVARCHAR(MAX)   '$.Contact' AS JSON,
+    City        NVARCHAR(100)   '$.CityName'
+);
 
 -- OPENJSON Без структуры
 
-SELECT * FROM OPENJSON(@json)
+SELECT * FROM OPENJSON(@json);
 
-SELECT * FROM OPENJSON(@json, '$.Suppliers')
+SELECT * FROM OPENJSON(@json, '$.Suppliers');
 
 -- Type:
 --    0 = null

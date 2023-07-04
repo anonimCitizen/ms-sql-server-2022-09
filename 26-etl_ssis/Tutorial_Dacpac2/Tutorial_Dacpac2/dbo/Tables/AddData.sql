@@ -1,0 +1,1 @@
+﻿insert into DPAC(name,description) values('10','10 values'),('20','20 values')

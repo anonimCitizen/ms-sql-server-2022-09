@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSet Name="DataSet1">
+    <Query>
+      <DataSourceReference>WWW</DataSourceReference>
+      <CommandText>USE WideWorldImporters; WITH TopPurchase AS (SELECT        C.CustomerName, i.InvoiceDate, i.CustomerPurchaseOrderNumber
+                                                                                                             FROM            Sales.Invoices i INNER JOIN
+                                                                                                                                       Sales.InvoiceLines il ON i.InvoiceID = il.InvoiceID INNER JOIN
+                                                                                                                                       Sales.Customers c ON i.BillToCustomerID = c.CustomerID
+                                                                                                             WHERE        InvoiceDate BETWEEN '20140101' AND '20140331')
+    SELECT        CustomerName, InvoiceDate, CustomerPurchaseOrderNumber
+     FROM            TopPurchase</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="CustomerName">
+        <DataField>CustomerName</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="InvoiceDate">
+        <DataField>InvoiceDate</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="CustomerPurchaseOrderNumber">
+        <DataField>CustomerPurchaseOrderNumber</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

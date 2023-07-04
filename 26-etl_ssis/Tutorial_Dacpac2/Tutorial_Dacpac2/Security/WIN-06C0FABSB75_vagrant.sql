@@ -1,0 +1,2 @@
+﻿CREATE USER [WIN-06C0FABSB75\vagrant];
+

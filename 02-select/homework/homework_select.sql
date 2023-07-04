@@ -12,12 +12,6 @@ https://github.com/Microsoft/sql-server-samples/releases/download/wide-world-imp
 * https://docs.microsoft.com/ru-ru/sql/samples/wide-world-importers-oltp-database-catalog
 */
 
-/*
-TODO: Требования к проверке:
-* оформление кода (ссылка на материал ...)
-* линтеры (плагины IDE ...)
-*/
-
 -- ---------------------------------------------------------------------------
 -- Задание - написать выборки для получения указанных ниже данных.
 -- ---------------------------------------------------------------------------
@@ -99,7 +93,6 @@ USE WideWorldImporters;
 которые покупали товар "Chocolate frogs 250g".
 Имя товара смотреть в таблице Warehouse.StockItems, имена клиентов и их контакты в таблице Sales.Customers.
 
-Вывести: todo
 Таблицы: Sales.Invoices, Sales.InvoiceLines, Sales.Customers, Warehouse.StockItems.
 */
 

@@ -2,13 +2,13 @@
   "rules": {
     "case-sensitive-variables": "error",
     "conditional-begin-end": "error",
-    "count-star": "error",
+    "count-star": "off",
     "cross-database-transaction": "error",
-    "data-compression": "error",
+    "data-compression": "off",
     "data-type-length": "error",
     "delete-where": "error",
     "disallow-cursors": "error",
-    "full-text": "error",
+    "full-text": "off",
     "information-schema": "error",
     "keyword-capitalization": "error",
     "linked-server": "error",
@@ -16,7 +16,7 @@
     "named-constraint": "error",
     "non-sargable": "error",
     "object-property": "error",
-    "print-statement": "error",
+    "print-statement": "off",
     "schema-qualify": "error",
     "select-star": "error",
     "semicolon-termination": "error",
@@ -24,10 +24,13 @@
     "set-nocount": "off",
     "set-quoted-identifier": "off",
     "set-transaction-isolation-level": "off",
-    "set-variable": "error",
+    "set-variable": "off",
     "update-where": "error",
     "upper-lower": "error",
     "unicode-string": "error"
   },
-  "compatibility-level": 140
+  "compatability-level": 140,
+  "plugins": {
+    "sample-plugin":".github/tsqllint/tsqllint-plugins.dll"
+  }
 }

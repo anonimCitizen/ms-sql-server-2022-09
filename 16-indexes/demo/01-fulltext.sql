@@ -1,9 +1,11 @@
+/* tsqllint-disable error non-sargable */
+
 -- =========================================
 -- Полнотекстовые индексы
 -- Fulltext indexes
 -- =========================================
 
-USE [WideWorldImporters]
+USE WideWorldImporters;
 GO
 
 -------------------------------------------
@@ -16,39 +18,38 @@ GO
 -- SSMS: <DB> \ Storage \ Full Text Catalogs
 
 -- Поддерживаемые языки
-SELECT * 
-FROM sys.fulltext_languages
+SELECT lcid, name
+FROM sys.fulltext_languages;
 -- если пусто, то значит компоненты полнотекстового поиска не установлены
 
 -- есть русский
-SELECT * 
+SELECT lcid, name
 FROM sys.fulltext_languages
-WHERE name = 'Russian'
-
+WHERE name = 'Russian';
 
 -- язык для полнотекстового поиска по умолчанию
-sp_configure 'show advanced options', 1;
-reconfigure
-sp_configure 'default full-text language';
+EXEC sp_configure 'show advanced options', 1;
+RECONFIGURE;
+EXEC sp_configure 'default full-text language';
 
-SELECT * 
+SELECT lcid, name 
 FROM sys.fulltext_languages
-WHERE lcid = 1033
+WHERE lcid = 1033;
 
 -- Создаем полнотекстовый каталог
 CREATE FULLTEXT CATALOG WWI_FT_Catalog
 WITH ACCENT_SENSITIVITY = ON
 AS DEFAULT
-AUTHORIZATION [dbo]
+AUTHORIZATION [dbo];
 -- ON FILEGROUP
 GO
 
 -- DROP FULLTEXT CATALOG WWI_FT_Catalog
 
-
 -- Будем создавать индекс для колонки StockItemName в Warehouse.StockItems
 -- Посмотрим, что там есть в таблице
-SELECT * FROM Warehouse.StockItems
+SELECT StockItemID, StockItemName
+FROM Warehouse.StockItems;
 
 -- Создаем полнотекстовый индекс на StockItemName
 CREATE FULLTEXT INDEX ON Warehouse.StockItems(StockItemName LANGUAGE Russian)
@@ -67,7 +68,7 @@ GO
 
 -- Обновление Full-Text Index (если CHANGE_TRACKING != AUTO)
 ALTER FULLTEXT INDEX ON Warehouse.StockItems
-START FULL POPULATION
+START FULL POPULATION;
 /*
 FULL POPULATION
 INCREMENTAL POPULATION - должна быть колонка rowversion
@@ -122,39 +123,41 @@ VALUES
 (N'Корм Padovan "Pappagalli Grandmix", для крупных попугаев, 2 кг', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 (N'Пенка-скраб для умывания Markell Everyday Lux Comfort Японские водоросли, 100 мл', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
 (N'Светодиодные лампы для салона X-tremeUltinon LED Philips, W5W (T10), 2 шт, 8000K. 12799 8000KX2', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-(N'Корм сухой Pro Plan "Sterilised" для стерилизованных кошек и кастрированных котов, с кроликом, 400 г', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1)
+(N'Корм сухой Pro Plan "Sterilised" для стерилизованных кошек и кастрированных котов, с кроликом, 400 г', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1);
 
 -- Поиск по словоформам
 SELECT StockItemID, StockItemName
 FROM Warehouse.StockItems 
-WHERE CONTAINS (StockItemName, 'FORMSOF(INFLECTIONAL, "кошка")')  
+WHERE CONTAINS (StockItemName, N'FORMSOF(INFLECTIONAL, "кошка")');
 GO  
 
 -- CONTAINSTABLE
 -- RANK - релевантность
 -- чем меньше значение, тем меньше релевантность
 SELECT 
-	StockItemID, 
-	StockItemName,
-	t.*
+    StockItemID, 
+    StockItemName,
+    t.[KEY],
+    t.[RANK]
 FROM Warehouse.StockItems s
 INNER JOIN CONTAINSTABLE(Warehouse.StockItems, StockItemName,  N'"black" NEAR "tape"' /*, 5*/) AS t
-ON s.StockItemID=t.[KEY]
+ON s.StockItemID = t.[KEY]
 ORDER BY t.RANK DESC;
 -- RANK - релевантность результата (чем больше, тем лучше)
 
 -- FREETEXT
 -- более гибкий, нечеткий поиск
--- The FREETEXT predicate provides fuzzy search and basic query capabilities.	
+-- The FREETEXT predicate provides fuzzy search and basic query capabilities.    
 
 -- FREETEXTTABLE
 SELECT 
-	StockItemID, 
-	StockItemName,
-	t.*
+    StockItemID, 
+    StockItemName,
+    t.[KEY],
+    t.[RANK]
 FROM Warehouse.StockItems s
 INNER JOIN FREETEXTTABLE(Warehouse.StockItems, StockItemName,  N'попугай корм') AS t
-ON s.StockItemID=t.[KEY]
+ON s.StockItemID = t.[KEY]
 ORDER BY t.RANK DESC;
 
 -- DIFFERENCE
@@ -166,5 +169,5 @@ SELECT
  DIFFERENCE(FullName, N'Kaula') AS FullName_Difference
 FROM [Application].People
 WHERE DIFFERENCE(FullName, N'Kaula') >= 3
-ORDER BY DIFFERENCE(FullName, N'Kaula') DESC
+ORDER BY DIFFERENCE(FullName, N'Kaula') DESC;
 GO
